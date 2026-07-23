@@ -1,0 +1,731 @@
+<html>
+<head>
+    <title>НСПАБ - МВР</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <style type="text/css">
+        :root {
+            --paper: #E7EBF0;
+            --surface: #FFFFFF;
+            --ink: #161B22;
+            --muted: #5B6673;
+            --line: #DDE3EA;
+            --steel: #1F2C38;
+            --signal: #C1121F;
+            --signal-dark: #9E0E18;
+            --tint: #F2F5F8;
+            --radius: 10px;
+            --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0
+        }
+
+        body {
+            font-family: var(--font);
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--ink);
+            background: var(--paper);
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+
+        /* masthead — official instrument banner */
+        .masthead {
+            background: var(--steel);
+            color: #fff;
+            padding: 15px 24px;
+            border-bottom: 3px solid var(--signal);
+            flex: none;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 16px 24px;
+            flex-wrap: wrap
+        }
+
+        .masthead .kicker {
+            font-size: 11px;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #93A6B6
+        }
+
+        .masthead h1 {
+            margin: 3px 0 0;
+            font-size: 19px;
+            font-weight: 700;
+            letter-spacing: .01em;
+            color: #fff
+        }
+
+        .masthead .sub {
+            margin-top: 3px;
+            font-size: 12.5px;
+            color: #A9B8C5
+        }
+
+        .mast-author {
+            text-align: right;
+            font-size: 12.5px;
+            line-height: 1.45
+        }
+
+        .mast-author .name {
+            color: #fff;
+            font-weight: 700
+        }
+
+        .mast-author a {
+            color: #A9B8C5;
+            text-decoration: none
+        }
+
+        .mast-author a:hover {
+            color: #fff;
+            text-decoration: underline
+        }
+
+        /* two document panels, each scrolling independently */
+        #app {
+            flex: 1 1 auto;
+            display: flex;
+            gap: 16px;
+            padding: 16px;
+            min-height: 0
+        }
+
+        #form-pane, #report-pane {
+            flex: 1 1 50%;
+            min-width: 0;
+            overflow: auto;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 20px 22px;
+            box-shadow: 0 1px 2px rgba(20, 30, 45, .05);
+        }
+
+        #form-pane h2 {
+            margin: 0 0 6px;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--steel);
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        /* group fieldsets — Време / Помещение и пожар / Гасене / Форма на гасене */
+        #form-pane fieldset {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            min-width: 0;
+            margin: 16px 0 0;
+            padding: 4px 14px 10px;
+        }
+
+        #form-pane legend {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            padding: 0 6px;
+        }
+
+        /* input-data tables */
+        .fields {
+            border-collapse: collapse;
+            width: 100%
+        }
+
+        .fields td {
+            padding: 5px 6px;
+            vertical-align: middle
+        }
+
+        .fields td:first-child {
+            text-align: right
+        }
+
+        .fields input[type="text"] {
+            width: 74px
+        }
+
+        .fields input[type="text"], .fields select {
+            font: inherit;
+            color: var(--ink);
+            background: #fff;
+            border: 1px solid #C9D2DB;
+            border-radius: 6px;
+            padding: 6px 8px;
+            transition: border-color .12s, box-shadow .12s;
+        }
+
+        .fields input[type="text"]:hover, .fields select:hover {
+            border-color: #A9B5C1
+        }
+
+        .fields input[type="text"]:focus, .fields select:focus {
+            outline: none;
+            border-color: var(--signal);
+            box-shadow: 0 0 0 3px rgba(193, 18, 31, .15);
+        }
+
+        input[type="radio"] {
+            accent-color: var(--signal);
+            width: 15px;
+            height: 15px;
+            vertical-align: -2px
+        }
+
+        /* extinguishing-shape picker */
+        .shapes {
+            border-collapse: collapse;
+            margin-top: 2px
+        }
+
+        .shapes td[colspan="6"] {
+            font-size: 11px;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--muted);
+            padding: 14px 0 5px;
+        }
+
+        .shapes img {
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 3px;
+            background: #fff;
+            cursor: pointer;
+            transition: border-color .12s, box-shadow .12s, transform .12s;
+        }
+
+        .shapes img:hover {
+            border-color: var(--signal);
+            box-shadow: 0 2px 8px rgba(193, 18, 31, .18);
+            transform: translateY(-1px)
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid var(--line);
+            margin: 22px 0 18px
+        }
+
+        /* primary action */
+        input[type="button"][name="but1"] {
+            font: inherit;
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: .02em;
+            color: #fff;
+            background: var(--signal);
+            border: none;
+            border-radius: 8px;
+            padding: 11px 24px;
+            cursor: pointer;
+            box-shadow: 0 1px 2px rgba(193, 18, 31, .3);
+            transition: background .12s, transform .06s;
+        }
+
+        input[type="button"][name="but1"]:hover {
+            background: var(--signal-dark)
+        }
+
+        input[type="button"][name="but1"]:active {
+            transform: translateY(1px)
+        }
+
+        input[type="button"][name="but1"]:focus-visible {
+            outline: 2px solid var(--steel);
+            outline-offset: 2px
+        }
+
+        /* report — shown exactly as it pastes into MS Word: plain black text on white,
+           no colour or shading. Only bold / italic / sub / sup carry over to Word, so
+           those are kept; everything decorative is stripped. */
+        #report {
+            color: #000;
+            font-style: italic;
+            font-variant-numeric: tabular-nums
+        }
+
+        #report h3 {
+            font-size: 14px;
+            font-weight: bold;
+            font-style: normal;
+            color: #000;
+            margin: 16px 0 6px;
+            padding: 0;
+            border: none
+        }
+
+        #report h3:first-child {
+            font-size: 15px;
+            margin: 0 0 12px
+        }
+
+        #report p {
+            margin: 4px 0;
+            color: #000
+        }
+
+        #report hr {
+            border: none;
+            border-top: 1px solid #DDE3EA;
+            margin: 12px 0 8px
+        }
+
+        #report .res {
+            font-weight: normal;
+            color: #000;
+            background: none;
+            border: none;
+            padding: 0;
+            margin: 6px 0
+        }
+
+        #report .warn {
+            color: #000;
+            background: none;
+            border: none;
+            padding: 0;
+            margin: 6px 0
+        }
+
+        #report i {
+            color: #000
+        }
+
+        /* modal — информация за формата на гасене */
+        #modal {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(20, 30, 45, .55);
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity .15s;
+        }
+
+        #modal.open {
+            visibility: visible;
+            opacity: 1
+        }
+
+        #modal .dialog {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 16px 48px rgba(20, 30, 45, .35);
+            width: 100%;
+            max-width: 480px;
+            max-height: 90vh;
+            overflow: auto;
+            position: relative;
+            padding: 22px 24px;
+            transform: translateY(8px);
+            transition: transform .15s;
+        }
+
+        #modal.open .dialog {
+            transform: none
+        }
+
+        #modal .close {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 26px;
+            line-height: 1;
+            color: var(--muted);
+            padding: 0;
+        }
+
+        #modal .close:hover {
+            color: var(--signal)
+        }
+
+        #modal h3 {
+            margin: 0 26px 14px 0;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--steel)
+        }
+
+        #modal img {
+            display: block;
+            max-width: 100%;
+            margin: 0 auto 16px;
+            border: 1px solid var(--line);
+            border-radius: 8px
+        }
+
+        #modal .formula {
+            font-size: 16px;
+            color: var(--steel);
+            margin: 0 0 8px
+        }
+
+        #modal .desc {
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.5;
+            margin: 0
+        }
+
+        /* responsive + a11y floor */
+        @media (max-width: 820px) {
+            #app {
+                flex-direction: column;
+                overflow: auto
+            }
+
+            #form-pane, #report-pane {
+                flex: none;
+                overflow: visible
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                transition: none !important
+            }
+        }
+    </style>
+    <script src="functions.js" type="text/javascript"></script>
+</head>
+<body>
+<header class="masthead">
+    <div class="mast-title">
+        <div class="kicker">Пожарна тактика · разчет</div>
+        <h1>Сили и средства за гасене на пожар</h1>
+        <div class="sub">Твърди горими вещества · гасене с вода · Раздел I</div>
+    </div>
+    <div class="mast-author">
+        <div class="kicker">Автор</div>
+        <div class="name">Plamen Markov</div>
+        <a href="mailto:plamen326@gmail.com">plamen326@gmail.com</a>
+    </div>
+</header>
+<div id="app">
+    <div id="form-pane">
+        <h2>Изходни данни</h2>
+        <form name="ppo1">
+            <fieldset>
+                <legend>Време</legend>
+                <table class="fields">
+                    <tr>
+                        <td>
+                            <div> Време до съобщението,<i> τ</i><sub>
+                                дс</sub> =
+                            </div>
+                        </td>
+                        <td>
+                            <input type="text" name="text0" value="10" size="4"
+                                   title="Време до съобщението - приема се средно 10 (мин).">
+                        </td>
+                        <td>(мин.)</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>Време за движение,<i> τ</i><sub>
+                                дв</sub> =
+                            </div>
+                        </td>
+                        <td>
+                            <input type="text" name="text1" value="4" size="4"
+                                   title="Време за пристигане - времето за придвижване на ППА от службата до горящия обект.">
+                        </td>
+                        <td>(мин.)</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                Време за разгръщане, <i>τ</i><sub>
+                                р</sub> =
+                            </div>
+                        </td>
+                        <td>
+                            <input type="text" name="text2" value="3" size="4"
+                                   title="Време на бойно разгръщане - времето за построяване на гасителните линии до подаването на първите струи вода.">
+                        </td>
+                        <td>(мин.)</td>
+                    </tr>
+                </table>
+            </fieldset>
+            <fieldset>
+                <legend>Помещение и пожар</legend>
+                <table class="fields">
+                    <tr>
+                        <td>
+                            <div>Ширина, <i>a</i> =</div>
+                        </td>
+                        <td>
+                            <input type="text" name="text4" value="10" size="6" title="Ширина на горящия обект.">
+                        </td>
+                        <td> (м.)</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>Дължина, <i>b</i> =</div>
+                        </td>
+                        <td>
+                            <input type="text" name="text5" value="12" size="6" title="Дължина на горящия обект.">
+                        </td>
+                        <td> (м.)</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>Линейна
+                                скорост на горене, <i>V</i><sub> л </sub>=
+                            </div>
+                        </td>
+                        <td>
+                            <select name="text3"
+                                    title="Линейна скорост на разпространение на горенето, съгласно Таблица № 1 от Указанията.">
+                                <option value="0.4">0.4</option>
+                                <option value="0.5">0.5</option>
+                                <option value="0.9">0.9</option>
+                                <option value="1" selected>1</option>
+                                <option value="1.1">1.1</option>
+                                <option value="1.5">1.5</option>
+                                <option value="1.6">1.6</option>
+                                <option value="2.3">2.3</option>
+                                <option value="3.5">3.5</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="30">30</option>
+                            </select>
+                        </td>
+                        <td>(м./мин.)</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                Интензивност на гасене,
+                                <i>I</i><sub>н</sub> =
+                            </div>
+                        </td>
+                        <td>
+                            <select name="text6"
+                                    title="Необходима интензивност на подаване на вода, съгласно Таблица № 2 от Указанията.">
+                                <option value="0.06">0.06</option>
+                                <option value="0.1" selected>0.1</option>
+                                <option value="0.15">0.15</option>
+                                <option value="0.2">0.2</option>
+                                <option value="0.25">0.25</option>
+                                <option value="0.3">0.3</option>
+                            </select>
+                        </td>
+                        <td>
+                            (л/с.м<sup>2</sup>)
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+            <fieldset>
+                <legend>Гасене</legend>
+                <table class="fields">
+                    <tr>
+                        <td>
+                            <div>
+                                Вид струйници за гасене:
+                            </div>
+                        </td>
+                        <td colspan="2">
+                            <select name="radio1"
+                                    title="Тип ръчен струйник за гасене — разход по Таблица № 3 от Указанията.">
+                                <option value="B">Тип "B" - 7 (л/с)</option>
+                                <option value="C" selected>Тип "C" - 3.5 (л/с)</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                Брой струйници "C" за защита:
+                            </div>
+                        </td>
+                        <td colspan="2">
+                            <select name="text7"
+                                    title="Количество струйници C за защита на съседни негорящи обекти, застрашени от пожара.">
+                                <option value="0" selected>0</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                Дебит на помпата на един автомобил, <i>Q</i><sub>па</sub> =
+                            </div>
+                        </td>
+                        <td colspan="2">
+                            <select name="qpa"
+                                    title="Дебит на помпата на един пожарен автомобил (л/с) — по техническата характеристика на автомобила.">
+                                <option value="10">10 (л/с)</option>
+                                <option value="16">16 (л/с)</option>
+                                <option value="20" selected>20 (л/с)</option>
+                                <option value="30">30 (л/с)</option>
+                                <option value="40">40 (л/с)</option>
+                                <option value="50">50 (л/с)</option>
+                                <option value="60">60 (л/с)</option>
+                                <option value="100">100 (л/с)</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+            <fieldset>
+                <legend>Форма на гасене</legend>
+                <table class="shapes">
+                    <tr>
+                        <td colspan="6"> По фронт 1-странно</td>
+                    <tr>
+                        <td>
+                            <input type="radio" name="radio2" value="option1">
+                        </td>
+                        <td width="74">
+                            <img src="images/area1_a.jpg" alt="Гасене по фронт 1-странно"
+                                onClick="area_1side_a();" title="Кликнете с мишката за повече информация.">
+                        </td>
+                        <td width="22">
+                            <input type="radio" name="radio2" value="option2">
+                        </td>
+                        <td colspan="3">
+                            <img src="images/area1_b.jpg" alt="Гасене по фронт 1-странно"
+                                onClick="area_1side_b();" title="Кликнете с мишката за повече информация.">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="6"> По фронт 2-странно</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="radio" name="radio2" value="option3" checked>
+                        </td>
+                        <td><img src="images/area2_aa.jpg" alt="Гасене по фронт 2-странно"
+                                 onClick="area_2sides_a();" title="Кликнете с мишката за повече информация."></td>
+                        <td>
+                            <input type="radio" name="radio2" value="option4">
+                        </td>
+                        <td width="74">
+                            <img src="images/area2_bb.jpg" alt="Гасене по фронт 2-странно"
+                                onClick="area_2sides_b();" title="Кликнете с мишката за повече информация.">
+                        </td>
+                        <td width="22">
+                            <input type="radio" name="radio2" value="option5">
+                        </td>
+                        <td width="74">
+                            <img src="images/area2_ab.jpg" alt="Гасене по фронт 2-странно"
+                                onClick="area_2sides_c();" title="Кликнете с мишката за повече информация.">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="6">
+                            По фронт 3-странно
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <input type="radio" name="radio2" value="option6">
+                        </td>
+                        <td>
+                            <img src="images/area3_aab.jpg" alt="Гасене по фронт 3-странно"
+                                 onClick="area_3sides_a();" title="Кликнете с мишката за повече информация.">
+                        </td>
+                        <td>
+                            <input type="radio" name="radio2" value="option7">
+                        </td>
+                        <td colspan="3">
+                            <img src="images/area3_abb.jpg" alt="Гасене по фронт 3-странно"
+                                onClick="area_3sides_b();" title="Кликнете с мишката за повече информация.">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="6">
+                            По периметър
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="radio" name="radio2" value="option8">
+                        </td>
+                        <td>
+                            <img src="images/area4.jpg" alt="Гасене по периметър правоъгълно"
+                                 onClick="area_perimeter_square();" title="Кликнете с мишката за повече информация.">
+                        </td>
+                        <td>
+                            <input type="radio" name="radio2" value="option9">
+                        </td>
+                        <td colspan="3">
+                            <img src="images/area_circle.jpg" alt="Гасене по периметър кръгово"
+                                onClick="area_perimeter_circle();" title="Кликнете с мишката за повече информация.">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="6">
+                            По площ
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="radio" name="radio2" value="option10">
+                        </td>
+                        <td colspan="5">
+                            <img src="images/area_plosht.jpg" alt="Гасене по площ"
+                                 onClick="area_plosht();" title="Кликнете с мишката за повече информация.">
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+            <hr>
+            <p>
+                <input type="button" name="but1" value="Калкулация" onClick="calc();">
+            </p>
+        </form>
+    </div>
+    <div id="report-pane">
+        <div id="report">
+            <h3>Разчет на силите и средствата за гасене на пожар</h3>
+            <p><i>( Натиснете бутон <b>Калкулация</b>, за да бъде изведен резултатът... )</i></p>
+        </div>
+    </div>
+</div>
+<div id="modal" onclick="closeShapeModal()">
+    <div class="dialog" onclick="event.stopPropagation()">
+        <button class="close" type="button" onclick="closeShapeModal()" title="Затвори" aria-label="Затвори">&times;
+        </button>
+        <h3 id="modalTitle"></h3>
+        <img id="modalImg" src="" alt="">
+        <p class="formula" id="modalFormula"></p>
+        <p class="desc" id="modalDesc"></p>
+    </div>
+</div>
+</body>
+</html>

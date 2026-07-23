@@ -1,0 +1,12 @@
+# OS cruft
+.DS_Store
+Thumbs.db
+
+# JetBrains IDE
+.idea/
+
+# Claude Code local (per-user) settings
+.claude/settings.local.json
+
+# Claude Code project guidance (not tracked)
+CLAUDE.md
